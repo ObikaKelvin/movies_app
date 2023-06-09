@@ -2,16 +2,19 @@ import { Box, Button, Center, Divider, Heading, Image, Text, VStack, Flex } from
 import { APP_KEY, BASE_URL } from '../../config/api_config';
 
 const MovieCard = (props) => {
-    const { original_title, popularity, release_date, poster_path } = props;
+    const { id, original_title, original_name, isMovie, popularity, release_date, poster_path, showMovie } = props;
+
+    const title = isMovie ? original_title : original_name;
+
     return(
         <Box mb={2} paddingX={4}>
             <Flex direction="row" alignItems='center'>
                 <Box mr={2}>
-                    <Image alt={original_title} source={{ uri: `https://image.tmdb.org/t/p/w500${poster_path}` }}  width={100} height={120} />
+                    <Image alt={title} source={{ uri: `https://image.tmdb.org/t/p/w500${poster_path}` }}  width={100} height={120} />
                 </Box>
 
                 <Box>
-                    <Heading size='xs' mb={1}>{original_title}</Heading>
+                    <Heading size='xs' mb={1}>{title}</Heading>
                     
                     <Text>
                         <Text>Popularity: </Text>
@@ -23,7 +26,7 @@ const MovieCard = (props) => {
                         <Text>{release_date}</Text>
                     </Text>
 
-                    <Button width={200}>More Details</Button>
+                    <Button onPress={() => showMovie(id)} width={200}>More Details</Button>
                 </Box>
             </Flex>
         </Box>

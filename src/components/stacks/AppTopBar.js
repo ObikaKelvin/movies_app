@@ -2,9 +2,11 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import colors from '../theme/colors';
 
-import Home from '../screens/Home';
+import SearchStack from './SearchStack';
+import MovieStack from './MovieStack';
+import TvStack from './TvStack';
 
-const AppNavigator = (props) => {
+const AppTopBar = (props) => {
 
     const appTab = createMaterialTopTabNavigator();
 
@@ -29,13 +31,13 @@ const AppNavigator = (props) => {
                 screenOptions={createScreenOptions}
                 backBehavior="history"
             >
-                <appTab.Screen name="Movies" component={Home} />
-                <appTab.Screen name="Search Results" component={Home} />
-                <appTab.Screen name="Tv Shows" component={Home} />
+                <appTab.Screen name="Movies" component={MovieStack} />
+                <appTab.Screen name="Search Results" component={SearchStack} />
+                <appTab.Screen name="Tv Shows" component={TvStack} />
             </appTab.Navigator>
         </NavigationContainer>
 
     )
 }
 
-export default AppNavigator;
+export default AppTopBar;
