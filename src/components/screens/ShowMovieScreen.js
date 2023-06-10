@@ -9,8 +9,8 @@ import ShowDetails from '../layout/ShowDetails';
 
 const ShowMovieScreen = props => {
     const isFocused = useIsFocused();
-    const { route, navigation, original_title, original_name } = props;
-    const { id, isMovie, type } = route.params;
+    const { route, navigation  } = props;
+    const { id, media_type } = route.params;
     const [movie, setMovie] = useState(null);
 
     useEffect(() => {
@@ -34,9 +34,19 @@ const ShowMovieScreen = props => {
     }, [isFocused]);
 
     useEffect(() => {
+
         if(movie) {
+
+            let title =  "";
+            if(movie.original_title && !movie.original_name) {
+                title = movie.original_title
+            }
+            else if(movie.original_name && !movie.original_title) {
+                title = movie.original_name
+            }
+
             navigation.setOptions({
-                title: isMovie ? movie.original_title : movie.original_name,
+                title,
                 headerBackTitle: "back to list",
                 headerBackTitleVisible: false
             });
@@ -44,21 +54,22 @@ const ShowMovieScreen = props => {
         }
     }, [movie]);
 
-    const getMovies = async () => {
-        const url = `${BASE_URL}/${type}/${id}?api_key=${APP_KEY}`;
+    const getMovie = async () => {
+        const url = `${BASE_URL}/${media_type}/${id}?api_key=${APP_KEY}`;
+        console.log(url)
         const response = await axios.get(url);
         setMovie(response.data)
     }
 
     useEffect(() => {
-        getMovies()
+        getMovie()
     }, [])
 
 
     const displayMovie = () => {
         if(movie) {
             return (
-                <ShowDetails data={movie} isMovie={isMovie} />
+                <ShowDetails data={movie} />
             )
         }
     

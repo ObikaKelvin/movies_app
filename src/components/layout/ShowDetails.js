@@ -1,10 +1,19 @@
 import { Box, Button, Center, Divider, Heading, Image, Text, VStack, Flex } from 'native-base'
 
 const ShowDetails = (props) => {
-    const { data, isMovie } = props;
-    const { original_title, original_name, popularity, overview, poster_path, showMovie } = data;
+    const { data, media_type } = props;
+    const { original_title, original_name, popularity, overview, poster_path } = data;
 
-    const title = isMovie ? original_title : original_name;
+    let title =  "";
+    if(original_title && !original_name) {
+        title = original_title
+    }
+    else if(original_name && !original_title) {
+        title = original_name
+    }
+    else{
+        title = media_type === "movie" ? original_title : original_name;
+    }
 
     return(
         <VStack space={10} alignItems='center' mb={2} paddingX={4}>

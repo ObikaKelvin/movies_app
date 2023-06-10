@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Select, VStack,  } from 'native-base';
+import { Box, Button, Select, VStack, Text } from 'native-base';
 
 import { APP_KEY, BASE_URL } from '../../config/api_config';
 import MovieList from '../lists/MovieList';
@@ -8,7 +8,8 @@ import Loading from '../layout/Loading';
 
 const MovieContainer = props => {
 
-    const { filters, type, isMovie, navigation } = props;
+    const { filters, type, navigation } = props;
+    const [allMovies, setAllMovies] = useState(null);
     const [movies, setMovies] = useState(null);
     const [activeFilter, setActiveFilter] = useState(filters[0]);
 
@@ -17,12 +18,21 @@ const MovieContainer = props => {
     const getMovies = async () => {
         const url = `${BASE_URL}/${type}/${activeFilter}?api_key=${APP_KEY}`;
         const response = await axios.get(url);
-        setMovies(response.data.results)
+        const { results } = response.data;
+        const limitedMovies = [];
+        for(let i = 0; i < 10; i++) {
+            limitedMovies.push(results[i])
+        }
+        setAllMovies(results);
+        setMovies(limitedMovies)
     }
 
-    const showMovie = (id) => {
-        navigation.navigate("ShowMovie", { id, isMovie, type})
-        console.log(id)
+    const showMovie = (id, media_type) => {
+        navigation.navigate("ShowMovie", { id, media_type})
+    }
+
+    const showAllMovies = (id, media_type) => {
+        navigation.navigate("ShowAll", { movies: allMovies })
     }
 
     useEffect(() => {
@@ -41,7 +51,7 @@ const MovieContainer = props => {
     const displayMovies = () => {
         if(movies) {
             return (
-                <MovieList data={movies} isMovie={isMovie} showMovie={showMovie} />
+                <MovieList data={movies} showMovie={showMovie} />
             )
         }
     
@@ -49,22 +59,28 @@ const MovieContainer = props => {
     }
 
     return (
-        <VStack alignItems="center" paddingY={10} space={10}>
-            <Box width={150}>
-                <Select 
-                    selectedValue={activeFilter} 
-                    minWidth="200" 
-                    accessibilityLabel="Choose Service" 
-                    placeholder="Choose Service" 
-                    mt={1}
-                    onValueChange={itemValue => setActiveFilter(itemValue)}
-                >
-                    {displayOptions()}
-                </Select>
-            </Box>
+        <>
+            <Text mb={1}>Showing 10 results</Text>
+            <Button onPress={showAllMovies}>View all</Button>
 
-            {displayMovies()}
-        </VStack>
+            <VStack alignItems="center" paddingY={10} mb={100} space={10}>
+                <Box width={150}>
+                    <Select 
+                        selectedValue={activeFilter} 
+                        minWidth="200" 
+                        accessibilityLabel="Choose Service" 
+                        placeholder="Choose Service" 
+                        mt={1}
+                        onValueChange={itemValue => setActiveFilter(itemValue)}
+                    >
+                        {displayOptions()}
+                    </Select>
+                </Box>
+
+                {displayMovies()}
+
+            </VStack>
+        </>
     )
 
 }
